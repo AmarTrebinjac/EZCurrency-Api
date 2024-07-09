@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /App
 # Configure port for https
-ENV ASPNETCORE_URLS=https://+:3000;
+ENV ASPNETCORE_URLS=http://*:3000
 # Expose port
 EXPOSE 3000
 
