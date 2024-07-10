@@ -32,19 +32,21 @@ namespace CurrencyConverter.Controllers
                     return StatusCode(500, "Failed to convert currencies");
                 }
 
-                var vm = new List<ConversionViewModel>();
+                var vm = new ConversionViewModel()
+                {
+                    Code = currency,
+                    Amount = amount
+                };
 
                 var from = convertedToNOK.First(c => c.Base == currency);
-                var conversion = new ConversionViewModel { Code = currency, Amount = amount };
 
                 var targetCurrencies = _currencyService.GetSupportedCurrencyCodes.Where(c => c != currency);
                 foreach (var toCurrency in targetCurrencies)
                 {
                     var to = convertedToNOK.First(c => c.Base == toCurrency);
-                    conversion.Conversions.Add(new CurrencyRateModel { Code = to.Base, Rate = _currencyService.GetRate(from, to, amount).Rate });
+                    vm.Conversions.Add(new CurrencyRateModel { Code = to.Base, Rate = _currencyService.GetRate(from, to, amount).Rate });
                 }
 
-                vm.Add(conversion);
 
                 _logger.LogInformation($"Successfully converted from {currency} to all other currencies");
                 return Ok(vm);
