@@ -12,7 +12,7 @@ namespace CurrencyConverter.Controllers
         private readonly CurrencyService _currencyService = currencyService;
         private readonly ILogger<ConvertController> _logger = logger;
 
-        [HttpGet("Convert-All-To/{currency}/Amount/{amount}")]
+        [HttpGet("All-From/{currency}/Amount/{amount}")]
         public async Task<ActionResult> ConvertAllTo(string currency, decimal amount)
         {
             try
