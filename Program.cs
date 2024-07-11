@@ -2,7 +2,7 @@ using CurrencyConverter.Models;
 using CurrencyConverter.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var allowAll = "AllowAll";
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -13,6 +13,18 @@ builder.Services.Configure<List<CurrencyDetailsModel>>(builder.Configuration.Get
 builder.Services.AddSingleton<CurrencyService>();
 builder.Services.AddHttpClient<CurrencyService>();
 
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(allowAll,
+          allowAll =>
+          {
+            allowAll
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+          });
+});
+
 builder.Services.AddLogging(opt =>
 opt.AddConfiguration(builder.Configuration.GetSection("Logging"))
   .AddConsole()
@@ -21,15 +33,12 @@ opt.AddConfiguration(builder.Configuration.GetSection("Logging"))
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-  app.UseSwagger();
-  app.UseSwaggerUI();
-}
+// Enable public swagger because the API is also public.
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+app.UseCors(allowAll);
 app.UseAuthorization();
 
 app.MapControllers();
